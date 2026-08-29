@@ -1,5 +1,18 @@
 from bs4 import BeautifulSoup
 from src.models.product import Product
+from src.fetchers.core.http_client import Fetcher
+
+
+def  get_content():
+    
+    source_url = "https://books.toscrape.com/catalogue/tipping-the-velvet_999/index.html"
+    
+    fetcher = Fetcher()
+    
+    html = fetcher.fetch(source_url)
+    
+    return parse(html,source_url)
+
 
 def availability_checker(text):
     return "in stock" in text.lower()
@@ -13,7 +26,7 @@ def parse(html,source_url):
     rating_tag = soup.select_one("p.star-rating")
 
     if title_tag is None or price_tag is None or availability_tag is None or rating_tag is None:
-        raise ValueError(f"Could not parse product data from {source_url}")
+        raise ValueError(f"Could not parse product data from {url}")
 
     title = title_tag.get_text(strip=True)
     price = float(price_tag.get_text(strip=True)[1:])
